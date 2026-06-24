@@ -1,0 +1,330 @@
+{
+  "Strings": [
+    {
+      "id": "STR-001",
+      "title": "Valid Palindrome",
+      "difficulty": "Easy",
+      "type": "algorithmic",
+      "description": "A phrase is a palindrome if, after converting all uppercase letters into lowercase letters and removing all non-alphanumeric characters, it reads the same forward and backward.\n\nGiven a string `s`, return `True` if it is a palindrome, or `False` otherwise.",
+      "examples": [
+        {"input": "s = 'A man, a plan, a canal: Panama'", "output": "True"},
+        {"input": "s = 'race a car'", "output": "False"},
+        {"input": "s = ' '", "output": "True"}
+      ],
+      "constraints": ["1 <= len(s) <= 2 * 10^5", "s consists only of printable ASCII characters"],
+      "function_signature": "def is_palindrome(s: str) -> bool:",
+      "test_cases": [
+        {"input": {"s": "A man, a plan, a canal: Panama"}, "expected": true},
+        {"input": {"s": "race a car"}, "expected": false},
+        {"input": {"s": " "}, "expected": true},
+        {"input": {"s": "Was it a car or a cat I saw?"}, "expected": true},
+        {"input": {"s": "hello"}, "expected": false}
+      ],
+      "hints": ["Try using two pointers", "Filter out non-alphanumeric chars first"]
+    },
+    {
+      "id": "STR-002",
+      "title": "Longest Substring Without Repeating Characters",
+      "difficulty": "Medium",
+      "type": "algorithmic",
+      "description": "Given a string `s`, find the length of the longest substring without repeating characters.",
+      "examples": [
+        {"input": "s = 'abcabcbb'", "output": "3"},
+        {"input": "s = 'bbbbb'", "output": "1"},
+        {"input": "s = 'pwwkew'", "output": "3"}
+      ],
+      "constraints": ["0 <= len(s) <= 5 * 10^4", "s consists of English letters, digits, symbols and spaces"],
+      "function_signature": "def length_of_longest_substring(s: str) -> int:",
+      "test_cases": [
+        {"input": {"s": "abcabcbb"}, "expected": 3},
+        {"input": {"s": "bbbbb"}, "expected": 1},
+        {"input": {"s": "pwwkew"}, "expected": 3},
+        {"input": {"s": ""}, "expected": 0},
+        {"input": {"s": "au"}, "expected": 2},
+        {"input": {"s": "dvdf"}, "expected": 3}
+      ],
+      "hints": ["Consider using a sliding window", "A set or dict can track seen characters"]
+    },
+    {
+      "id": "STR-003",
+      "title": "Anagram Check",
+      "difficulty": "Easy",
+      "type": "algorithmic",
+      "description": "Given two strings `s` and `t`, return `True` if `t` is an anagram of `s`, and `False` otherwise.\n\nAn anagram uses the same characters the same number of times, in any order.",
+      "examples": [
+        {"input": "s = 'anagram', t = 'nagaram'", "output": "True"},
+        {"input": "s = 'rat', t = 'car'", "output": "False"}
+      ],
+      "constraints": ["1 <= len(s), len(t) <= 5 * 10^4", "s and t consist of lowercase English letters"],
+      "function_signature": "def is_anagram(s: str, t: str) -> bool:",
+      "test_cases": [
+        {"input": {"s": "anagram", "t": "nagaram"}, "expected": true},
+        {"input": {"s": "rat", "t": "car"}, "expected": false},
+        {"input": {"s": "listen", "t": "silent"}, "expected": true},
+        {"input": {"s": "hello", "t": "world"}, "expected": false},
+        {"input": {"s": "ab", "t": "a"}, "expected": false}
+      ],
+      "hints": ["Sorting both strings is one approach", "A frequency counter (dict/Counter) is O(n)"]
+    },
+    {
+      "id": "STR-004",
+      "title": "String Reversal Mastery",
+      "difficulty": "Easy",
+      "type": "syntax",
+      "description": "Implement a function that reverses a string **without** using Python's built-in `[::-1]` slice or `reversed()`. You must use explicit iteration or recursion.\n\nReturn the reversed string.",
+      "examples": [
+        {"input": "s = 'hello'", "output": "'olleh'"},
+        {"input": "s = 'Python'", "output": "'nohtyP'"}
+      ],
+      "constraints": ["1 <= len(s) <= 10^4", "Do not use s[::-1] or reversed()"],
+      "function_signature": "def reverse_string(s: str) -> str:",
+      "test_cases": [
+        {"input": {"s": "hello"}, "expected": "olleh"},
+        {"input": {"s": "Python"}, "expected": "nohtyP"},
+        {"input": {"s": "a"}, "expected": "a"},
+        {"input": {"s": "abcd"}, "expected": "dcba"},
+        {"input": {"s": "racecar"}, "expected": "racecar"}
+      ],
+      "hints": ["Try using a while loop with two pointers", "Or build up a result string character by character"]
+    }
+  ],
+  "Lists": [
+    {
+      "id": "LST-001",
+      "title": "List Comprehension and In-Place Mutations",
+      "difficulty": "Easy",
+      "type": "syntax",
+      "description": "Given a list of integers `nums`, return a **new list** containing only the even numbers, each multiplied by 2.\n\nYou must use a **list comprehension** (not a for loop appending to a list).",
+      "examples": [
+        {"input": "nums = [1, 2, 3, 4, 5, 6]", "output": "[4, 8, 12]"},
+        {"input": "nums = [1, 3, 5]", "output": "[]"}
+      ],
+      "constraints": ["0 <= len(nums) <= 10^4", "Must use list comprehension syntax"],
+      "function_signature": "def double_evens(nums: list) -> list:",
+      "test_cases": [
+        {"input": {"nums": [1, 2, 3, 4, 5, 6]}, "expected": [4, 8, 12]},
+        {"input": {"nums": [1, 3, 5]}, "expected": []},
+        {"input": {"nums": [2, 4, 6, 8]}, "expected": [4, 8, 12, 16]},
+        {"input": {"nums": []}, "expected": []},
+        {"input": {"nums": [10, 21, 32]}, "expected": [20, 64]}
+      ],
+      "hints": ["Syntax: [expr for item in iterable if condition]", "Filter with `if num % 2 == 0`"]
+    },
+    {
+      "id": "LST-002",
+      "title": "Two Sum",
+      "difficulty": "Easy",
+      "type": "algorithmic",
+      "description": "Given an array of integers `nums` and an integer `target`, return the **indices** of the two numbers such that they add up to `target`.\n\nYou may assume that each input would have exactly one solution, and you may not use the same element twice. Return the answer in any order.",
+      "examples": [
+        {"input": "nums = [2,7,11,15], target = 9", "output": "[0, 1]"},
+        {"input": "nums = [3,2,4], target = 6", "output": "[1, 2]"},
+        {"input": "nums = [3,3], target = 6", "output": "[0, 1]"}
+      ],
+      "constraints": ["2 <= len(nums) <= 10^4", "-10^9 <= nums[i] <= 10^9", "Only one valid answer exists"],
+      "function_signature": "def two_sum(nums: list, target: int) -> list:",
+      "test_cases": [
+        {"input": {"nums": [2, 7, 11, 15], "target": 9}, "expected": [0, 1]},
+        {"input": {"nums": [3, 2, 4], "target": 6}, "expected": [1, 2]},
+        {"input": {"nums": [3, 3], "target": 6}, "expected": [0, 1]},
+        {"input": {"nums": [1, 5, 3, 7], "target": 8}, "expected": [1, 3]},
+        {"input": {"nums": [-1, -2, -3, -4, -5], "target": -8}, "expected": [2, 4]}
+      ],
+      "hints": ["A hash map lets you find complements in O(1)", "For each num, check if (target - num) is already in your map"]
+    },
+    {
+      "id": "LST-003",
+      "title": "Maximum Subarray (Kadane's Algorithm)",
+      "difficulty": "Medium",
+      "type": "algorithmic",
+      "description": "Given an integer array `nums`, find the subarray with the largest sum, and return its sum.\n\nA subarray is a contiguous part of an array.",
+      "examples": [
+        {"input": "nums = [-2,1,-3,4,-1,2,1,-5,4]", "output": "6"},
+        {"input": "nums = [1]", "output": "1"},
+        {"input": "nums = [5,4,-1,7,8]", "output": "23"}
+      ],
+      "constraints": ["1 <= len(nums) <= 10^5", "-10^4 <= nums[i] <= 10^4"],
+      "function_signature": "def max_subarray(nums: list) -> int:",
+      "test_cases": [
+        {"input": {"nums": [-2, 1, -3, 4, -1, 2, 1, -5, 4]}, "expected": 6},
+        {"input": {"nums": [1]}, "expected": 1},
+        {"input": {"nums": [5, 4, -1, 7, 8]}, "expected": 23},
+        {"input": {"nums": [-1, -2, -3]}, "expected": -1},
+        {"input": {"nums": [1, 2, 3, 4, 5]}, "expected": 15}
+      ],
+      "hints": ["Kadane's: track current_sum and max_sum", "Reset current_sum to 0 when it goes negative"]
+    },
+    {
+      "id": "LST-004",
+      "title": "Rotate Array",
+      "difficulty": "Medium",
+      "type": "algorithmic",
+      "description": "Given an integer array `nums`, rotate the array to the right by `k` steps, where `k` is non-negative. Perform rotation **in-place** and return the modified list.",
+      "examples": [
+        {"input": "nums = [1,2,3,4,5,6,7], k = 3", "output": "[5,6,7,1,2,3,4]"},
+        {"input": "nums = [-1,-100,3,99], k = 2", "output": "[3,99,-1,-100]"}
+      ],
+      "constraints": ["1 <= len(nums) <= 10^5", "0 <= k <= 10^5", "Modify in-place"],
+      "function_signature": "def rotate(nums: list, k: int) -> list:",
+      "test_cases": [
+        {"input": {"nums": [1, 2, 3, 4, 5, 6, 7], "k": 3}, "expected": [5, 6, 7, 1, 2, 3, 4]},
+        {"input": {"nums": [-1, -100, 3, 99], "k": 2}, "expected": [3, 99, -1, -100]},
+        {"input": {"nums": [1, 2], "k": 3}, "expected": [2, 1]},
+        {"input": {"nums": [1], "k": 0}, "expected": [1]},
+        {"input": {"nums": [1, 2, 3], "k": 6}, "expected": [1, 2, 3]}
+      ],
+      "hints": ["k %= len(nums) handles k > len(nums)", "The reversal trick: reverse all, then reverse first k, then rest"]
+    }
+  ],
+  "Dictionaries": [
+    {
+      "id": "DCT-001",
+      "title": "Group Anagrams",
+      "difficulty": "Medium",
+      "type": "algorithmic",
+      "description": "Given an array of strings `strs`, group the anagrams together. You can return the answer in **any order**.\n\nAn anagram is a word formed by rearranging letters of another word using all original letters exactly once.",
+      "examples": [
+        {"input": "strs = ['eat','tea','tan','ate','nat','bat']", "output": "[['bat'],['nat','tan'],['ate','eat','tea']]"},
+        {"input": "strs = ['']", "output": "[['']]"},
+        {"input": "strs = ['a']", "output": "[['a']]"}
+      ],
+      "constraints": ["1 <= len(strs) <= 10^4", "0 <= len(strs[i]) <= 100", "strs[i] consists of lowercase English letters"],
+      "function_signature": "def group_anagrams(strs: list) -> list:",
+      "test_cases": [
+        {"input": {"strs": ["eat", "tea", "tan", "ate", "nat", "bat"]}, "expected": [["bat"], ["nat", "tan"], ["ate", "eat", "tea"]]},
+        {"input": {"strs": [""]}, "expected": [[""]]},
+        {"input": {"strs": ["a"]}, "expected": [["a"]]},
+        {"input": {"strs": ["abc", "cba", "bca", "xyz", "zyx"]}, "expected": [["abc", "cba", "bca"], ["xyz", "zyx"]]}
+      ],
+      "hints": ["Sorted string of an anagram is always the same", "Use sorted(word) as the dict key"]
+    },
+    {
+      "id": "DCT-002",
+      "title": "Top K Frequent Elements",
+      "difficulty": "Medium",
+      "type": "algorithmic",
+      "description": "Given an integer array `nums` and an integer `k`, return the `k` most frequent elements. You may return the answer in **any order**.",
+      "examples": [
+        {"input": "nums = [1,1,1,2,2,3], k = 2", "output": "[1, 2]"},
+        {"input": "nums = [1], k = 1", "output": "[1]"}
+      ],
+      "constraints": ["1 <= len(nums) <= 10^5", "k is in the range [1, number of unique elements]", "The answer is guaranteed to be unique"],
+      "function_signature": "def top_k_frequent(nums: list, k: int) -> list:",
+      "test_cases": [
+        {"input": {"nums": [1, 1, 1, 2, 2, 3], "k": 2}, "expected": [1, 2]},
+        {"input": {"nums": [1], "k": 1}, "expected": [1]},
+        {"input": {"nums": [4, 1, -1, 2, -1, 2, 3], "k": 2}, "expected": [-1, 2]},
+        {"input": {"nums": [1, 2], "k": 2}, "expected": [1, 2]}
+      ],
+      "hints": ["Count frequencies with a dict or Counter", "Sort by frequency or use a heap"]
+    },
+    {
+      "id": "DCT-003",
+      "title": "Dict Comprehension Mastery",
+      "difficulty": "Easy",
+      "type": "syntax",
+      "description": "Given a list of words, return a dictionary where each key is a word and each value is the length of that word.\n\nYou must use a **dict comprehension** (not a for loop with assignment).",
+      "examples": [
+        {"input": "words = ['apple', 'bat', 'cherry']", "output": "{'apple': 5, 'bat': 3, 'cherry': 6}"},
+        {"input": "words = []", "output": "{}"}
+      ],
+      "constraints": ["0 <= len(words) <= 10^4", "Must use dict comprehension syntax"],
+      "function_signature": "def word_lengths(words: list) -> dict:",
+      "test_cases": [
+        {"input": {"words": ["apple", "bat", "cherry"]}, "expected": {"apple": 5, "bat": 3, "cherry": 6}},
+        {"input": {"words": []}, "expected": {}},
+        {"input": {"words": ["a", "bb", "ccc"]}, "expected": {"a": 1, "bb": 2, "ccc": 3}},
+        {"input": {"words": ["python"]}, "expected": {"python": 6}}
+      ],
+      "hints": ["Syntax: {key_expr: val_expr for item in iterable}", "Use len(word) as the value"]
+    }
+  ],
+  "Arrays": [
+    {
+      "id": "ARR-001",
+      "title": "Contains Duplicate",
+      "difficulty": "Easy",
+      "type": "algorithmic",
+      "description": "Given an integer array `nums`, return `True` if any value appears **at least twice** in the array, and return `False` if every element is distinct.",
+      "examples": [
+        {"input": "nums = [1,2,3,1]", "output": "True"},
+        {"input": "nums = [1,2,3,4]", "output": "False"},
+        {"input": "nums = [1,1,1,3,3,4,3,2,4,2]", "output": "True"}
+      ],
+      "constraints": ["1 <= len(nums) <= 10^5", "-10^9 <= nums[i] <= 10^9"],
+      "function_signature": "def contains_duplicate(nums: list) -> bool:",
+      "test_cases": [
+        {"input": {"nums": [1, 2, 3, 1]}, "expected": true},
+        {"input": {"nums": [1, 2, 3, 4]}, "expected": false},
+        {"input": {"nums": [1, 1, 1, 3, 3, 4, 3, 2, 4, 2]}, "expected": true},
+        {"input": {"nums": [1]}, "expected": false},
+        {"input": {"nums": [0, 0]}, "expected": true}
+      ],
+      "hints": ["A set only stores unique elements", "Compare len(nums) vs len(set(nums))"]
+    },
+    {
+      "id": "ARR-002",
+      "title": "Product of Array Except Self",
+      "difficulty": "Medium",
+      "type": "algorithmic",
+      "description": "Given an integer array `nums`, return an array `answer` such that `answer[i]` is equal to the product of all the elements of `nums` except `nums[i]`.\n\nYou must solve it in **O(n)** time and **without using division**.",
+      "examples": [
+        {"input": "nums = [1,2,3,4]", "output": "[24,12,8,6]"},
+        {"input": "nums = [-1,1,0,-3,3]", "output": "[0,0,9,0,0]"}
+      ],
+      "constraints": ["2 <= len(nums) <= 10^5", "-30 <= nums[i] <= 30", "No division allowed"],
+      "function_signature": "def product_except_self(nums: list) -> list:",
+      "test_cases": [
+        {"input": {"nums": [1, 2, 3, 4]}, "expected": [24, 12, 8, 6]},
+        {"input": {"nums": [-1, 1, 0, -3, 3]}, "expected": [0, 0, 9, 0, 0]},
+        {"input": {"nums": [2, 3]}, "expected": [3, 2]},
+        {"input": {"nums": [1, 1, 1, 1]}, "expected": [1, 1, 1, 1]},
+        {"input": {"nums": [0, 1, 2]}, "expected": [2, 0, 0]}
+      ],
+      "hints": ["Use a prefix product array and a suffix product array", "Then combine: answer[i] = prefix[i] * suffix[i]"]
+    },
+    {
+      "id": "ARR-003",
+      "title": "Best Time to Buy and Sell Stock",
+      "difficulty": "Easy",
+      "type": "algorithmic",
+      "description": "You are given an array `prices` where `prices[i]` is the price of a given stock on the `i`th day.\n\nYou want to maximize your profit by choosing a single day to buy one stock and choosing a **different day in the future** to sell that stock. Return the maximum profit. If no profit is achievable, return `0`.",
+      "examples": [
+        {"input": "prices = [7,1,5,3,6,4]", "output": "5"},
+        {"input": "prices = [7,6,4,3,1]", "output": "0"}
+      ],
+      "constraints": ["1 <= len(prices) <= 10^5", "0 <= prices[i] <= 10^4"],
+      "function_signature": "def max_profit(prices: list) -> int:",
+      "test_cases": [
+        {"input": {"prices": [7, 1, 5, 3, 6, 4]}, "expected": 5},
+        {"input": {"prices": [7, 6, 4, 3, 1]}, "expected": 0},
+        {"input": {"prices": [2, 4, 1]}, "expected": 2},
+        {"input": {"prices": [1, 2]}, "expected": 1},
+        {"input": {"prices": [3, 3, 3]}, "expected": 0}
+      ],
+      "hints": ["Track the minimum price seen so far", "At each step, compute profit = current - min_seen"]
+    },
+    {
+      "id": "ARR-004",
+      "title": "Find Minimum in Rotated Sorted Array",
+      "difficulty": "Medium",
+      "type": "algorithmic",
+      "description": "Suppose an array of length `n` sorted in ascending order is **rotated** between 1 and n times.\n\nGiven the sorted rotated array `nums` of unique elements, return the minimum element. You must write an algorithm that runs in **O(log n)** time.",
+      "examples": [
+        {"input": "nums = [3,4,5,1,2]", "output": "1"},
+        {"input": "nums = [4,5,6,7,0,1,2]", "output": "0"},
+        {"input": "nums = [11,13,15,17]", "output": "11"}
+      ],
+      "constraints": ["n == len(nums)", "1 <= n <= 5000", "All integers are unique", "Must be O(log n)"],
+      "function_signature": "def find_min(nums: list) -> int:",
+      "test_cases": [
+        {"input": {"nums": [3, 4, 5, 1, 2]}, "expected": 1},
+        {"input": {"nums": [4, 5, 6, 7, 0, 1, 2]}, "expected": 0},
+        {"input": {"nums": [11, 13, 15, 17]}, "expected": 11},
+        {"input": {"nums": [2, 1]}, "expected": 1},
+        {"input": {"nums": [1]}, "expected": 1}
+      ],
+      "hints": ["Binary search: compare mid with right pointer", "If nums[mid] > nums[right], minimum is on the right half"]
+    }
+  ]
+}

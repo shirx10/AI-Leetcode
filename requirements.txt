@@ -1,0 +1,5 @@
+google-genai>=0.8.0
+langgraph>=0.1.19
+langchain-core>=0.2.0
+streamlit>=1.36.0
+streamlit-code-editor>=0.1.20
