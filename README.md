@@ -1,130 +1,101 @@
-# 🧠 AI LeetCode & Python Mastery Coach
+# AI LeetCode Coach — FastAPI + Streamlit Architecture
 
-A stateful, adaptive learning coach built with **LangGraph + Streamlit + Anthropic**.
-
----
-
-## Architecture
+## Directory Structure
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                    LangGraph StateGraph                  │
-│                                                         │
-│   ┌──────────────────────┐                             │
-│   │  select_problem_node  │ ← Spaced repetition:       │
-│   │  (Entry Point)        │   failed first → new →     │
-│   └──────────┬───────────┘   random fallback           │
-│              │                                          │
-│   ┌──────────▼───────────┐                             │
-│   │  evaluate_code_node   │ ← Programmatic sandbox:    │
-│   │                       │   exec() in isolated ns    │
-│   └──────────┬───────────┘                             │
-│              │ add_conditional_edges                    │
-│         ┌────▼────┐                                     │
-│         │ passed? │                                     │
-│         └──┬───┬──┘                                     │
-│         YES│   │NO                                      │
-│   ┌────────▼┐ ┌▼──────────────┐                        │
-│   │ mastery │ │  critic_node   │ ← LLM deep critique   │
-│   │  _node  │ │  (Anthropic)   │   structured output   │
-│   └────┬────┘ └──────┬─────────┘                       │
-│        │             │                                  │
-│       END           END                                 │
-└─────────────────────────────────────────────────────────┘
+coach_app/
+│
+├── backend/
+│   ├── main.py                  # FastAPI app, CORS, router registration
+│   ├── models.py                # All Pydantic request/response models
+│   │
+│   ├── routers/
+│   │   ├── problems.py          # GET /api/problems, GET /api/problems/{id},
+│   │   │                        # POST /api/problems/next
+│   │   ├── execution.py         # POST /api/run-tests  (fast path, no LLM)
+│   │   └── agent.py             # POST /api/review-code (full LangGraph loop)
+│   │
+│   ├── services/
+│   │   ├── data_vault.py        # File I/O, problem lookups, boilerplate gen
+│   │   └── executor.py          # Code execution engine (exec + test runner)
+│   │
+│   └── graph/
+│       ├── state.py             # CoachState TypedDict
+│       ├── nodes.py             # All LangGraph node functions
+│       └── builder.py           # Compiled graph singletons (eval + selection)
+│
+├── frontend/
+│   └── app.py                   # Streamlit UI — pure presentation, no logic
+│
+├── problems.json                # Problem vault (unchanged)
+└── requirements.txt
 ```
 
-## File Structure
+## Design Principles
 
-```
-.
-├── app.py              # Main application (Streamlit + LangGraph)
-├── problems.json       # Local data vault (16 problems across 4 topics)
-├── requirements.txt    # Python dependencies
-└── README.md
-```
+### 1. Strict Layer Separation
+Each layer has one job:
+- **`services/`** — pure Python, zero framework imports (no FastAPI, no Streamlit)
+- **`graph/`** — LangGraph only; reads from services, no HTTP
+- **`routers/`** — HTTP boundary; validates input, calls services/graph, formats output
+- **`frontend/app.py`** — renders UI and makes HTTP requests; stores zero business logic
 
-## Setup
+### 2. Stateless Backend
+The API keeps no per-user session.  Every request from Streamlit sends the
+full coaching context (`history`, `mastery_score`, `session_log`), and the
+response returns the updated versions of those fields.  The Streamlit app
+stores them in `st.session_state` and echoes them back on the next call.
+
+This means you can replace Streamlit with any other frontend (React, CLI, etc.)
+without touching a single line of backend code.
+
+### 3. Two-Graph Design (preserved)
+`eval_graph` (entry: `evaluate_code_node`) is used for submissions.
+`selection_graph` (entry: `select_problem_node`) is used for problem loading.
+This prevents the original bug where invoking the graph during a submission
+would re-run `select_problem_node` and swap in a different problem's test cases.
+
+### 4. Gemini API Key Flow
+The API key is **never stored on the server**.
+- User enters it in the Streamlit sidebar → stored in `st.session_state.gemini_api_key`
+- Sent in the `POST /api/review-code` request body as `gemini_api_key`
+- Threaded through `CoachState["gemini_api_key"]` to `critic_node`
+- `critic_node` creates a fresh `genai.Client(api_key=...)` per request
+
+## Running the App
 
 ```bash
-# 1. Install dependencies
+# Install dependencies
 pip install -r requirements.txt
 
-# 2. Run the app
-streamlit run app.py
+# Terminal 1: start the API server
+uvicorn backend.main:app --reload --port 8000
+
+# Terminal 2: start the Streamlit frontend
+streamlit run frontend/app.py
 ```
 
-Then enter your **Anthropic API key** in the sidebar.
+Open http://localhost:8501 for the UI.
+Open http://localhost:8000/docs for the interactive Swagger API explorer.
 
----
+## API Endpoints
 
-## Core Components
+| Method | Path                    | Purpose                                      |
+|--------|-------------------------|----------------------------------------------|
+| GET    | `/health`               | Liveness check                               |
+| GET    | `/api/problems`         | Full problem vault                           |
+| GET    | `/api/problems/{id}`    | Single problem detail                        |
+| POST   | `/api/problems/next`    | Spaced-repetition next problem selection     |
+| POST   | `/api/run-tests`        | Execute code, return test results (no LLM)   |
+| POST   | `/api/review-code`      | Full loop: evaluate + mastery + Critic Agent |
 
-### `CoachState` (TypedDict)
-```python
-class CoachState(TypedDict):
-    selected_topic: str
-    current_problem: dict       # full problem object from JSON vault
-    user_code: str              # raw code submitted by user
-    evaluation_result: dict     # {passed, passed_count, total, results, summary}
-    history: dict               # {passed: [ids], failed: [ids]}
-    critic_feedback: str        # markdown critique from critic_node
-    mastery_score: dict         # {topic: 0-100}
-    session_log: list[dict]     # ordered event log for sidebar history
-```
+## Key Differences from the Monolith
 
-### Graph Nodes
-
-| Node | Responsibility |
-|------|---------------|
-| `select_problem_node` | Spaced-repetition aware selector. Retries failed problems first. |
-| `evaluate_code_node` | Runs `exec()` sandbox, checks all hidden test cases. |
-| `mastery_node` | Updates mastery score (+10/unique pass, capped at 100). |
-| `critic_node` | Calls Anthropic LLM with structured prompt for deep code critique. |
-
-### Conditional Routing
-
-```python
-graph.add_conditional_edges(
-    "evaluate_code_node",
-    route_after_evaluation,          # returns "mastery_node" or "critic_node"
-    {"mastery_node": "mastery_node", "critic_node": "critic_node"},
-)
-```
-
-### `problems.json` Schema
-
-```json
-{
-  "TopicName": [
-    {
-      "id": "STR-001",
-      "title": "Problem Title",
-      "difficulty": "Easy | Medium | Hard",
-      "type": "algorithmic | syntax",
-      "description": "Markdown problem statement",
-      "examples": [{"input": "...", "output": "..."}],
-      "constraints": ["..."],
-      "function_signature": "def fn_name(args) -> return_type:",
-      "test_cases": [
-        {"input": {"arg1": value}, "expected": value}
-      ],
-      "hints": ["..."]
-    }
-  ]
-}
-```
-
----
-
-## Extending the Vault
-
-Add problems to `problems.json` following the schema above. The `function_signature` field is
-critical — the evaluation engine parses it to locate the user's function by name.
-
-## Adaptive Learning Logic
-
-1. **First visit** → pick an unseen problem from the selected topic
-2. **Failure** → add to `history.failed`, Critic Agent writes review
-3. **Next session** → `select_problem_node` checks `history.failed` first (spaced repetition)
-4. **Retry success** → remove from `failed`, add to `passed`, increment mastery score
-5. **All problems seen** → shuffle and re-serve from the topic pool
+| Concern               | Old (app.py)                          | New (FastAPI)                              |
+|-----------------------|---------------------------------------|--------------------------------------------|
+| Business logic        | Entangled with Streamlit widgets      | Isolated in `services/` and `graph/`       |
+| Session state         | `st.session_state` dict               | Client-side; echoed in every API request   |
+| LLM client            | Stored in `st.session_state`          | Created per-request from body key          |
+| Graph compilation     | Inside `init_session_state()`         | Module-level singleton in `builder.py`     |
+| Editor reset bug      | Required `_bump_editor_key()` hack    | Solved cleanly: reset → API clears state   |
+| Test isolation        | Impossible (Streamlit required)       | `executor.py` and `nodes.py` are pure Python, fully unit-testable |
